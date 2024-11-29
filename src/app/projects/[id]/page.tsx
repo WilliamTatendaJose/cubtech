@@ -2,7 +2,7 @@ import Image from "next/image"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ContactSection } from "@/components/contact-section"
-import { GetServerSideProps } from 'next';
+import { notFound } from "next/navigation";
 
 // This would typically come from a database or API
 const projects = [
@@ -72,30 +72,20 @@ const projects = [
   },
 ]
 
-// Define the Project interface
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  images: string[];
-  details: string[];
+
+// Define a function to fetch project data based on the ID
+async function fetchProject(id: string) {
+  const project = projects.find(p => p.id === id);
+  if (!project) {
+    notFound(); // Use notFound to handle missing project
+  }
+  return project;
 }
 
-// Update the function to use GetServerSideProps
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string };
-  const project = projects.find(p => p.id === id);
+// Update the ProjectPage component to fetch data
+export default async function ProjectPage({ params }: { params: { id: string } }): Promise<JSX.Element> {
+  const project = await fetchProject(params.id); // Fetch the project data
 
-  if (!project) {
-    return { notFound: true };
-  }
-
-  return {
-    props: { project }, // Pass the project data to the page
-  };
-};
-
-export default function ProjectPage({ project }: { project: Project }): JSX.Element {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
