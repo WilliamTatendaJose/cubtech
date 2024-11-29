@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 
 import { useState } from "react"
@@ -25,16 +25,16 @@ export default function CheckoutPage() {
     paymentMethod: "card", // Default payment method
   })
 
-  const handleInputChange = (e: { target: { name: any; value: any } }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handlePaymentMethodChange = (value: any) => {
+  const handlePaymentMethodChange = (value: string) => {
     setFormData((prev) => ({ ...prev, paymentMethod: value }))
   }
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Here you would typically send the order to your backend
     // and integrate with the selected payment provider
