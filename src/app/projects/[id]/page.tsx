@@ -72,8 +72,8 @@ const projects = [
   },
 ]
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
-  const project = projects.find(p => p.id === params.id)
+export default function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const project = projects.find(async p => p.id === (await params).id)
 
   if (!project) {
     notFound()
