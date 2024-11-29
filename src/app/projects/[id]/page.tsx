@@ -81,7 +81,7 @@ interface Project {
   details: string[];
 }
 
-export default async function ProjectPage({ params }: { params: { id: string } }) {
+export default async function ProjectPage({ params }: { params: { id: string } }): Promise<JSX.Element> {
   const project = await new Promise<Project | undefined>((resolve) => {
     resolve(projects.find(p => p.id === params.id));
   });
