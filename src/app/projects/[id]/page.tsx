@@ -1,8 +1,8 @@
 import Image from "next/image"
-import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ContactSection } from "@/components/contact-section"
+import { GetServerSideProps } from 'next';
 
 // This would typically come from a database or API
 const projects = [
@@ -81,15 +81,21 @@ interface Project {
   details: string[];
 }
 
-export default async function ProjectPage({ params }: { params: { id: string } }): Promise<JSX.Element> {
-  const project = await new Promise<Project | undefined>((resolve) => {
-    resolve(projects.find(p => p.id === params.id));
-  });
+// Update the function to use GetServerSideProps
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params as { id: string };
+  const project = projects.find(p => p.id === id);
 
   if (!project) {
-    notFound()
+    return { notFound: true };
   }
 
+  return {
+    props: { project }, // Pass the project data to the page
+  };
+};
+
+export default function ProjectPage({ project }: { project: Project }): JSX.Element {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
@@ -118,6 +124,6 @@ export default async function ProjectPage({ params }: { params: { id: string } }
       <ContactSection />
       <SiteFooter />
     </div>
-  )
+  );
 }
 
