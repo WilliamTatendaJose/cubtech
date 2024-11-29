@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useCart } from "@/hooks/use-cart"
+import { useToast } from "@/components/toast-context"
 import { Product } from "@/lib/products"
 
 interface ProductCardProps {
@@ -13,6 +14,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onSelect }: ProductCardProps) {
   const { addItem } = useCart()
+  const { showToast } = useToast()
+
+  const handleAddToCart = () => {
+    addItem(product)
+    showToast(`${product.name} added to cart`)
+  }
 
   return (
     <Card className="overflow-hidden">
@@ -33,7 +40,7 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
         <p className="text-sm text-muted-foreground">Category: {product.category}</p>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => addItem(product)} className="w-full">
+        <Button onClick={handleAddToCart} className="w-full">
           Add to Cart
         </Button>
       </CardFooter>

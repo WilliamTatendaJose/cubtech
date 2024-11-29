@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { CartProvider } from '@/components/cartProvider'
+import { ToastWrapper } from '@/components/toast-context'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+       <CartProvider>
+          <ToastWrapper>
+            {children}
+          </ToastWrapper>
+        </CartProvider>
       </body>
     </html>
   );

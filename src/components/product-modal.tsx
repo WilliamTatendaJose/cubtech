@@ -8,17 +8,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useCart } from "@/hooks/use-cart"
+import { Product } from "@/lib/products"
 
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  price: number;
+interface ProductModalProps {
+  product: Product
+  onClose: () => void
 }
 
-export function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
+export function ProductModal({ product, onClose }: ProductModalProps) {
   const { addItem } = useCart()
+
+  const handleAddToCart = () => {
+    addItem(product)
+    onClose()
+  }
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -39,7 +42,8 @@ export function ProductModal({ product, onClose }: { product: Product; onClose: 
         </div>
         <p className="text-muted-foreground">{product.description}</p>
         <p className="mt-2 font-bold text-lg">${product.price.toFixed(2)}</p>
-        <Button onClick={() => addItem({ ...product, id: parseInt(product.id) })} className="w-full mt-4">
+        <p className="text-sm text-muted-foreground">Category: {product.category}</p>
+        <Button onClick={handleAddToCart} className="w-full mt-4">
           Add to Cart
         </Button>
       </DialogContent>

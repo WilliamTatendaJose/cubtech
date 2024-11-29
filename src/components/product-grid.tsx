@@ -24,7 +24,7 @@ export function ProductGrid({ products = [] }: ProductGridProps) {
       ))}
       {selectedProduct && (
         <ProductModal
-          product={{...selectedProduct, id: selectedProduct.id.toString()}}
+          product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
         />
       )}

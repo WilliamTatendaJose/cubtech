@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Product } from '@/lib/products'
 
 // Define a type for the cart item
-type CartItem = {
-  id: number; // or string, depending on your product ID type
-  price: number;
-  name: string
-  cartId?: number; // Added cartId as an optional property
-  // Add other product properties as needed
+interface CartItem extends Product {
+  cartId: number
 }
 
 export function useCart() {
@@ -23,18 +20,17 @@ export function useCart() {
     localStorage.setItem('cart', JSON.stringify(items))
   }, [items])
 
-  const addItem = (product: CartItem) => {
+  const addItem = useCallback((product: Product) => {
     setItems((prevItems) => [...prevItems, { ...product, cartId: Date.now() }])
-    console.log(items)
-  }
+  }, [])
 
-  const removeItem = (cartId:number ) => {
-    setItems((prevItems) => prevItems.filter(item => item.id !== cartId))
-  }
+const removeItem = useCallback((cartId: number) => {
+    setItems((prevItems) => prevItems.filter(item => item.cartId !== cartId))
+  }, [])
 
-  const clearCart = () => {
+    const clearCart = useCallback(() => {
     setItems([])
-  }
+  }, [])
 
   const total = items.reduce((sum, item) => sum + item.price, 0)
 

@@ -13,7 +13,7 @@ export const products: Product[] = [
     name: "Automation Controller",
     description: "High-performance PLC for industrial automation",
     price: 599.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/automation.jpg?height=300&width=300",
     category: "Automation"
   },
   {
@@ -21,7 +21,7 @@ export const products: Product[] = [
     name: "CCTV Camera",
     description: "HD security camera with night vision",
     price: 199.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/cctv.jpg?height=300&width=300",
     category: "Security"
   },
   {
@@ -29,7 +29,7 @@ export const products: Product[] = [
     name: "Solar Panel",
     description: "High-efficiency monocrystalline solar panel",
     price: 299.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/panels.jpg?300&width=300",
     category: "Solar"
   },
   {
@@ -37,7 +37,7 @@ export const products: Product[] = [
     name: "HVAC System",
     description: "Energy-efficient air conditioning unit",
     price: 799.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/hvac.jpg",
     category: "HVAC"
   },
   {
@@ -45,7 +45,7 @@ export const products: Product[] = [
     name: "Industrial Sensor",
     description: "Precision sensor for industrial applications",
     price: 149.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/drive.jpg?height=300&width=300",
     category: "Automation"
   },
   {
@@ -53,7 +53,7 @@ export const products: Product[] = [
     name: "Access Control System",
     description: "Advanced access control for enhanced security",
     price: 399.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/cctv.jpg?height=300&width=300",
     category: "Security"
   },
 ]
