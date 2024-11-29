@@ -7,24 +7,30 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import Link from "next/link"
 
 const projects = [
-  {
+ {
+    id: "industrial-automation",
     title: "Industrial Automation",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/relay.jpg?height=400&width=600",
   },
   {
+    id: "solar-installation",
     title: "Solar Installation",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/panels-stand.jpg?height=400&width=600",
   },
   {
+    id: "hvac-systems",
     title: "HVAC Systems",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/hvac.jpg?height=400&width=600",
   },
   {
+    id: "security-systems",
     title: "Security Systems",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/cctv.jpg?height=400&width=600",
   },
+
 ]
 
 export function ProjectsSection() {
@@ -41,21 +47,23 @@ export function ProjectsSection() {
           <CarouselContent>
             {projects.map((project, index) => (
               <CarouselItem key={index}>
-                <Card>
-                  <CardContent className="p-0">
-                    <div className="relative aspect-[16/9]">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover rounded-t-lg"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold">{project.title}</h3>
-                    </div>
-                  </CardContent>
-                </Card>
+                 <Link href={`/projects/${project.id}`}>
+                  <Card>
+                    <CardContent className="p-0">
+                      <div className="relative aspect-[16/9]">
+                        <Image
+                          src={project.image}
+                          alt={project.title}
+                          fill
+                          className="object-cover rounded-t-lg"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold">{project.title}</h3>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               </CarouselItem>
             ))}
           </CarouselContent>

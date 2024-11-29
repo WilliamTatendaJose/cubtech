@@ -45,10 +45,10 @@ export function SiteFooter() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul className="space-y-2">
-              <li className="text-slate-400">Electrical Automation</li>
+              <li className="text-slate-400">Automation</li>
               <li className="text-slate-400">Security Systems</li>
               <li className="text-slate-400">Solar Solutions</li>
-              <li className="text-slate-400">Plant Maintenance</li>
+              <li className="text-slate-400">Generators</li>
             </ul>
           </div>
           <div>

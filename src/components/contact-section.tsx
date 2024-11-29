@@ -1,9 +1,66 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, MapPin, Phone } from "lucide-react"
+import { useState } from "react"
+
+
+
 
 export function ContactSection() {
+   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSuccess(false);
+    setLoading(true);
+    setError(null);
+
+    const data = {
+      name,
+      email,
+      subject,
+      message,
+    };
+    console.log("presseddata is ");
+    console.log(data);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setSuccess(true);
+        setError(null);
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        const errorMessage = await response.text();
+        setError(errorMessage);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section id="contact" className="bg-slate-50 py-24">
       <div className="container">
@@ -29,37 +86,69 @@ export function ContactSection() {
             </div>
           </div>
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  <label htmlFor="name"
+                
+                   className="block text-sm font-medium mb-2">
                     Name
                   </label>
-                  <Input id="name" required />
+                  <Input  placeholder="Your Name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-2">
                     Email
                   </label>
-                  <Input id="email" type="email" required />
+                  <Input  placeholder="Your Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required />
                 </div>
               </div>
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium mb-2">
                   Subject
                 </label>
-                <Input id="subject" required />
+                <Input 
+                    placeholder="Subject"
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required/>
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-2">
                   Message
                 </label>
-                <Textarea id="message" required className="min-h-[150px]" />
+                <Textarea 
+                  placeholder="Your Message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="min-h-[150px]" />
               </div>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                Send Message
+              <Button type="submit" className="w-full hover:bg-gray-500"
+              disabled={loading}
+              >
+                {loading ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
+             {success && (
+            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mt-6">
+              Message sent successfully!
+            </div>
+          )}
+          {error && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-6">
+              An error occured please try again later
+            </div>
+          )}
           </div>
         </div>
       </div>

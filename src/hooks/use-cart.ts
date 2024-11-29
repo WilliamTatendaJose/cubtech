@@ -25,10 +25,11 @@ export function useCart() {
 
   const addItem = (product: CartItem) => {
     setItems((prevItems) => [...prevItems, { ...product, cartId: Date.now() }])
+    console.log(items)
   }
 
-  const removeItem = (cartId: any) => {
-    setItems((prevItems) => prevItems.filter(item => item.cartId !== cartId))
+  const removeItem = (cartId:number ) => {
+    setItems((prevItems) => prevItems.filter(item => item.id !== cartId))
   }
 
   const clearCart = () => {
