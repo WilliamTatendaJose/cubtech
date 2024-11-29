@@ -72,8 +72,19 @@ const projects = [
   },
 ]
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
-  const project = projects.find(p => p.id === params.id)
+// Define the Project interface
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  images: string[];
+  details: string[];
+}
+
+export default async function ProjectPage({ params }: { params: { id: string } }) {
+  const project = await new Promise<Project | undefined>((resolve) => {
+    resolve(projects.find(p => p.id === params.id));
+  });
 
   if (!project) {
     notFound()
@@ -104,8 +115,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           ))}
         </ul>
       </main>
-      <ContactSection/>
-
+      <ContactSection />
       <SiteFooter />
     </div>
   )
