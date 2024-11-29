@@ -4,6 +4,15 @@ import { SiteFooter } from "@/components/site-footer"
 import { ContactSection } from "@/components/contact-section"
 import { notFound } from "next/navigation";
 
+// Define the Project type
+type Project = {
+  id: string;
+  title: string;
+  description: string;
+  images: string[];
+  details: string[];
+};
+
 // This would typically come from a database or API
 const projects = [
   {
@@ -74,13 +83,15 @@ const projects = [
 
 
 // Define a function to fetch project data based on the ID
-async function fetchProject(id: string) {
-  const project = projects.find(p => p.id === id);
-  if (!project) {
-    notFound(); // Use notFound to handle missing project
-  }
-  return project;
-}
+const fetchProject = (id: string): Promise<Project | undefined> => {
+  return new Promise((resolve) => {
+    const project = projects.find(p => p.id === id);
+    if (!project) {
+      notFound(); // Use notFound to handle missing project
+    }
+    resolve(project);
+  });
+};
 
 // Update the ProjectPage component to fetch data
 export default async function ProjectPage({ params }: { params: { id: string } }): Promise<JSX.Element> {
@@ -90,26 +101,32 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <main className="flex-1 container py-12">
-        <h1 className="text-4xl font-bold mb-6">{project.title}</h1>
-        <p className="text-xl mb-8">{project.description}</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {project.images.map((image, index) => (
-            <div key={index} className="relative aspect-video">
-              <Image
-                src={image}
-                alt={`${project.title} image ${index + 1}`}
-                fill
-                className="object-cover rounded-lg"
-              />
+        {project ? ( // Check if project is defined
+          <>
+            <h1 className="text-4xl font-bold mb-6">{project.title}</h1>
+            <p className="text-xl mb-8">{project.description}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {project.images.map((image, index) => (
+                <div key={index} className="relative aspect-video">
+                  <Image
+                    src={image}
+                    alt={`${project.title} image ${index + 1}`}
+                    fill
+                    className="object-cover rounded-lg"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <h2 className="text-2xl font-bold mb-4">Project Details</h2>
-        <ul className="list-disc list-inside space-y-2 mb-8">
-          {project.details.map((detail, index) => (
-            <li key={index}>{detail}</li>
-          ))}
-        </ul>
+            <h2 className="text-2xl font-bold mb-4">Project Details</h2>
+            <ul className="list-disc list-inside space-y-2 mb-8">
+              {project.details.map((detail, index) => (
+                <li key={index}>{detail}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>Project not found.</p> // Handle the case when project is undefined
+        )}
       </main>
       <ContactSection />
       <SiteFooter />
