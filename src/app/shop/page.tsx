@@ -2,6 +2,7 @@
 
 import { useState} from "react"
 import Image from "next/image"
+import { useRouter } from 'next/navigation';
 import { ShoppingCart,ShoppingBag, X, Plus, Minus } from 'lucide-react'
 import { ShopHeader } from "@/components/shop-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -168,12 +169,15 @@ async function handleSubmit(event: React.FormEvent) {
     showToast(`An unexpected error occurred. Please try again.`)
   }
 }
-
+ const router = useRouter();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function handleResponse(response: Response, result: any) {
+ 
+
   if (response.ok) {
     showToast('Payment successful! Your order has been placed.');
     clearCart();
+    router.push('/success');
   } else {
     showToast(`Payment failed: ${result.error || 'Unknown error'}`);
   }

@@ -23,6 +23,6 @@
     },
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.ts", "src/app/api/mobile-payment/route.js", "src/app/api/payment-status/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.ts", "src/app/api/mobile-payment/route.js", "src/app/api/payment-status/route.js", "src/app/api/pay-card/route.js"],
   "exclude": ["node_modules"]
 }
