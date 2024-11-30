@@ -12,6 +12,8 @@ export function PaynowForm() {
       <Button className="w-full bg-green-600 hover:bg-green-700">
         Pay with Paynow
       </Button>
+
+       
     </div>
   )
 }

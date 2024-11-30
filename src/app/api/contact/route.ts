@@ -9,7 +9,6 @@ const reciever= process.env.RECEIVER_EMAIL
 export async function POST(request: Request) {
   const data = await request.json()
   const { name, email, subject, message } = data
-  console.log("api called")
 
   const msg = {
     to: reciever!, // Change this to your recipient

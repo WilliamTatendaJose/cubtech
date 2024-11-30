@@ -1,16 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ShoppingCart } from 'lucide-react'
 import { useState } from "react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useCart } from "@/hooks/use-cart"
+import { Sheet, SheetContent } from "@/components/ui/sheet"
+
 import { CartSidebar } from "@/components/cart-sidebar"
 
 export function ShopHeader() {
   const [isOpen, setIsOpen] = useState(false)
-  const { items } = useCart()
+ 
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -28,7 +26,7 @@ export function ShopHeader() {
             Products
           </Link>
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
+            {/* <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
                 {items.length > 0 && (
@@ -37,7 +35,7 @@ export function ShopHeader() {
                   </span>
                 )}
               </Button>
-            </SheetTrigger>
+            </SheetTrigger> */}
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <CartSidebar />
             </SheetContent>
