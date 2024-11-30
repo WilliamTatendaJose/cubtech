@@ -1,3 +1,6 @@
+"use client"
+
+import {useState, useEffect} from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -9,31 +12,34 @@ import {
 } from "@/components/ui/carousel"
 import Link from "next/link"
 
-const projects = [
- {
-    id: "industrial-automation",
-    title: "Industrial Automation",
-    image: "/relay.jpg?height=400&width=600",
-  },
-  {
-    id: "solar-installation",
-    title: "Solar Installation",
-    image: "/panels-stand.jpg?height=400&width=600",
-  },
-  {
-    id: "hvac-systems",
-    title: "HVAC Systems",
-    image: "/hvac.jpg?height=400&width=600",
-  },
-  {
-    id: "security-systems",
-    title: "Security Systems",
-    image: "/cctv.jpg?height=400&width=600",
-  },
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  details: number;
+  mainImage: string
+  images: string[]
 
-]
+}
+
 
 export function ProjectsSection() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  useEffect(() => {
+    const fetchProjects = async () => {
+       try {
+        const response = await fetch('/api/get-projects');
+        const data = await response.json();
+        setProjects(data);
+      } catch (error) {
+        console.error('Error fetching featured projects:', error);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+
+
   return (
     <section id="projects" className="py-24">
       <div className="container">
@@ -47,12 +53,12 @@ export function ProjectsSection() {
           <CarouselContent>
             {projects.map((project, index) => (
               <CarouselItem key={index}>
-                 <Link href={`/projects/${project.id}`}>
+                 <Link href={`/projects/${project._id}`}>
                   <Card>
                     <CardContent className="p-0">
                       <div className="relative aspect-[16/9]">
                         <Image
-                          src={project.image}
+                          src={project.mainImage}
                           alt={project.title}
                           fill
                           className="object-cover rounded-t-lg"

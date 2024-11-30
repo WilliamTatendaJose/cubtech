@@ -1,3 +1,6 @@
+"use client"
+
+import {useState, useEffect} from "react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
@@ -5,83 +8,38 @@ import { SiteFooter } from "@/components/site-footer"
 import { ContactSection } from "@/components/contact-section"
 
 // This would typically come from a database or API
-const projects = [
-  {
-    id: "industrial-automation",
-    title: "Industrial Automation",
-    description: "We implemented a state-of-the-art industrial automation system for a manufacturing plant, increasing efficiency by 40% and reducing downtime by 60%.",
-    images: [
-      "/automation.jpg",
-      "/automation.jpg",
-      "/automation.jpg",
-    ],
-    details: [
-      "Implemented PLC-based control systems",
-      "Integrated SCADA for real-time monitoring",
-      "Developed custom HMI for operator interface",
-      "Implemented predictive maintenance algorithms",
-    ],
-  },
-  {
-    id: "solar-installation",
-    title: "Solar Installation",
-    description: "Our team designed and installed a 500kW solar power system for a commercial complex, reducing their energy costs by 70% and carbon footprint by 500 tons annually.",
-    images: [
-      "/panels.jpg",
-      "/panels.jpg",
-      "/panels-stand.jpg",
-    ],
-    details: [
-      "Conducted site survey and feasibility study",
-      "Designed optimal panel layout for maximum efficiency",
-      "Installed high-efficiency solar panels and inverters",
-      "Implemented smart monitoring system for performance tracking",
-    ],
-  },
-  {
-    id: "hvac-systems",
-    title: "HVAC Systems",
-    description: "We upgraded the HVAC system for a large office building, improving energy efficiency by 50% and enhancing indoor air quality to meet the highest standards.",
-    images: [
-      "/drive.jpg",
-      "/drive.jpg",
-      "/drive.jpg",
-    ],
-    details: [
-      "Conducted energy audit and system analysis",
-      "Installed high-efficiency HVAC units",
-      "Implemented smart zoning and thermostats",
-      "Integrated air purification systems",
-    ],
-  },
-  {
-    id: "security-systems",
-    title: "Security Systems",
-    description: "Our team designed and implemented a comprehensive security system for a high-security facility, including advanced surveillance, access control, and intrusion detection.",
-    images: [
-      "/drive.jpg",
-      "/drive.jpg",
-      "/drive.jpg",
-    ],
-    details: [
-      "Installed high-resolution IP cameras with night vision",
-      "Implemented biometric access control systems",
-      "Set up a centralized monitoring station",
-      "Integrated AI-powered video analytics for threat detection",
-    ],
-  },
-]
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  details: string[];
+  mainImage: string
+  images: string[]
 
-export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const project = projects.find(p => p.id === id)
+}
+
+export default async function ProjectPage({ params }: { params: Promise<{_id: string }> }) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  useEffect(() => {
+    const fetchProjects = async () => {
+       try {
+        const response = await fetch('/api/get-projects');
+        const data = await response.json();
+        setProjects(data);
+      } catch (error) {
+        console.error('Error fetching featured projects:', error);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+  const { _id } = await params;
+  const project = projects.find(p => p._id === _id)
   if (!project) {
-    return <div>Project not found</div>
+    return notFound()
   }
 
-  if (!project) {
-    notFound()
-  }
+ 
 
   return (
     <div className="flex min-h-screen flex-col">

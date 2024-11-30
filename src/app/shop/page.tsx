@@ -1,6 +1,6 @@
 "use client"
 
-import { useState} from "react"
+import { useState,useEffect} from "react"
 import Image from "next/image"
 import { useRouter } from 'next/navigation';
 import { ShoppingCart,ShoppingBag, X, Plus, Minus } from 'lucide-react'
@@ -15,7 +15,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { products } from "@/lib/products"
 import { useToast } from "@/components/toast-context"
 
 type CartItem = {
@@ -24,6 +23,14 @@ type CartItem = {
   price: number
   quantity: number
 }
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+}
 
 export default function ShopPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -31,6 +38,8 @@ export default function ShopPage() {
   const [showCheckout, setShowCheckout] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const { showToast } = useToast()
+  const [products, setProducts] = useState<Product[]>([]);
+
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [formData, setFormData] = useState({
     name: "",
@@ -69,6 +78,22 @@ type Payload = {
     phoneNumber: string;
   };
 };
+  useEffect(() => {
+    const fetchProducts = async () => {
+       try {
+        const response = await fetch('/api/get-products');
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+
+
   const categories = ["All", ...Array.from(new Set(products.map(product => product.category)))]
 
   const filteredProducts = products.filter(product => 
@@ -453,18 +478,25 @@ function handleResponse(response: Response, result: any) {
               <SelectTrigger id="category">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
-              <SelectContent>
+              {Array.isArray(categories)&&categories.length>0?(
+                <SelectContent>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
                   </SelectItem>
                 ))}
               </SelectContent>
+              ):(
+                <>
+                </>
+              )
+              }
+              
             </Select>
           </div>
         </div>
       </div>
-
+      {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredProducts.map((product) => (
           <Card key={product.id}>
@@ -491,9 +523,22 @@ function handleResponse(response: Response, result: any) {
           </Card>
         ))}
       </div>
+      ):(
+        
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center">
+        <h1 className="text-4xl font-bold text-green-600 mb-4">Products Not Found </h1>
+        <p className="text-lg text-gray-700 mb-6">
+          Not Products at the moment. Please check back in a few moments or make sure yo are connected to the internet.
+        </p>
+      </div>
+
+      )
+      
+      
+      }
      
-    </div>
-     <SiteFooter />
+           </div>
+      <SiteFooter />
     </>
     
   )
