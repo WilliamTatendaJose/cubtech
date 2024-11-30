@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
+const integrationId = process.env.PAYNOW_INTEGRATION_ID || '';
+const integrationKey = process.env.PAYNOW_INTEGRATION_KEY || '';
 export async function POST(request) {
+
   try {
     const { amount, paymentMethod, orderId, email, phoneNumber } = await request.json();
 
     const paynowUrl = 'https://www.paynow.co.zw/Payment/Submit';
-    const paynowApiKey = '0f7022d9-fb89-4297-ad03-5f8c6ebfd7a3'; // Replace with your actual Paynow API key
-    const paynowShortcode = '19640'; // Replace with your Paynow shortcode
+    const paynowApiKey = integrationId; // Replace with your actual Paynow API key
+    const paynowShortcode = integrationKey; // Replace with your Paynow shortcode
 
     const paymentData = {
       shortcode: paynowShortcode,
