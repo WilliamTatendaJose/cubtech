@@ -7,15 +7,15 @@ const integrationKey = process.env.PAYNOW_INTEGRATION_KEY || '';
 // Initialize Paynow instance
 const paynow = new Paynow(integrationId, integrationKey);
 
-paynow.resultUrl = `${process.env.BASE_URL}/api/payment-result`; // Callback URL
-paynow.returnUrl = `${process.env.BASE_URL}/success`; // Success redirect URL
+paynow.resultUrl = `${process.env.BASE_URL}/api/payment-result`; 
+paynow.returnUrl = `${process.env.BASE_URL}/success`; 
 
 export async function POST(req) {
   try {
     const body = await req.json();
     const { name, email, total, mobilePaymentDetails } = body;
 
-    // Ensure mobilePaymentDetails exists and extract paymentMethod and phoneNumber
+    // Validation checks (keep existing validation)
     if (!mobilePaymentDetails) {
       return new Response(
         JSON.stringify({ error: 'Missing mobile payment details' }),
@@ -36,42 +36,52 @@ export async function POST(req) {
     const payment = paynow.createPayment(`Order-${Date.now()}`, email);
     payment.add('Order Total', total);
 
-    // Generate the hash
+    // Generate the hash (CORRECTED)
     const hash = crypto.createHash('sha512');
-    hash.update(`${integrationId}${payment.reference}`);
-    const hashed = hash.digest('hex');
+    hash.update(`${payment.reference}${total}${integrationKey}`);
+    const hashed = hash.digest('hex').toLowerCase();
 
-    // Initiate the mobile payment
-    const mobileResponse = await paynow.sendMobile(payment, phoneNumber, paymentMethod, hashed);
+    try {
+      // Initiate the mobile payment
+      const mobileResponse = await paynow.sendMobile(payment, phoneNumber, paymentMethod, hashed);
 
-    // Handle undefined or error response
-    if (!mobileResponse) {
-      console.error('Paynow mobile response is undefined:', mobileResponse);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Failed to initiate payment. No response from Paynow.',
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+      // Handle undefined or error response
+      if (!mobileResponse) {
+        console.error('Paynow mobile response is undefined:', mobileResponse);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Failed to initiate payment. No response from Paynow.',
+          }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
 
-    if (mobileResponse.success) {
+      if (mobileResponse.success) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: 'Payment initiated successfully',
+            pollUrl: mobileResponse.pollUrl,
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      } else {
+        console.error('Paynow payment initiation failed:', mobileResponse);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: `Failed to initiate payment: ${mobileResponse.errorMessage || 'Unknown error'}`,
+          }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    } catch (paymentError) {
+      console.error('Paynow payment error:', paymentError);
       return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Payment initiated successfully',
-          pollUrl: mobileResponse.pollUrl, // URL to check the status
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
-    } else {
-      // Handle specific Paynow error response
-      console.error('Paynow payment initiation failed:', mobileResponse);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: `Failed to initiate payment: ${mobileResponse.errorMessage || 'Unknown error'}`,
+        JSON.stringify({ 
+          success: false, 
+          error: paymentError.message || 'Payment initiation failed' 
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
