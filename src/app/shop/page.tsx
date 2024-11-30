@@ -154,7 +154,7 @@ async function handleSubmit(event: React.FormEvent) {
         phoneNumber: formData.phoneNumber,
       };
 
-      const response = await fetch('/api/mobile-payment', {
+      const response = await fetch('/api/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
