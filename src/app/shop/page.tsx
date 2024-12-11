@@ -16,20 +16,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { useToast } from "@/components/toast-context"
+import client from "@/lib/sanity-client";
+import { Product } from "@/lib/products";
 
 type CartItem = {
-  id: number
+  id: string
   name: string
   price: number
   quantity: number
-}
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
 }
 
 export default function ShopPage() {
@@ -78,19 +72,29 @@ type Payload = {
     phoneNumber: string;
   };
 };
-  useEffect(() => {
-    const fetchProducts = async () => {
-       try {
-        const response = await fetch('/api/get-products');
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-      }
-    }
+const query = `*[_type == "product"] {
+  _id,
+  name,
+  description,
+  price,
+  "image": image.asset->url,
+  category
+}`;
 
-    fetchProducts();
-  }, []);
+useEffect(() => {
+  const loadProducts = async () => {
+    try {
+      const data = await client.fetch(query); // Ensure client.fetch is invoked correctly
+      setProducts(data); // Set the fetched data
+    } catch (error) {
+      console.error('Error fetching featured products:', error); // Log errors
+    }
+  };
+
+  loadProducts(); // Invoke the async function
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // Removed `query` from the dependency array
+
 
 
 
@@ -102,29 +106,31 @@ type Payload = {
   )
 
   const addToCart = (product: typeof products[0]) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id)
-      if (existingItem) {
-        return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      } else {
-        return [...prevItems, { ...product, quantity: 1 }]
-      }
-    })
-  }
+  setCartItems((prevItems) => {
+    const existingItem = prevItems.find((item) => String(item.id) === String(product._id));
+    if (existingItem) {
+      return prevItems.map((item) =>
+        String(item.id) === String(product._id) ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      return [...prevItems, { ...product, id: String(product._id), quantity: 1 }]; // Convert product ID to string
+    }
+  });
+};
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
-  }
+const updateQuantity = (id: string, quantity: number) => {
+  setCartItems((prevItems) =>
+    prevItems
+      .map((item) =>
+        String(item.id) === String(id) ? { ...item, quantity: Math.max(0, quantity) } : item
+      )
+      .filter((item) => item.quantity > 0)
+  );
+};
+const removeFromCart = (id: string) => {
+  setCartItems((prevItems) => prevItems.filter((item) => String(item.id) !== String(id)));
+};
 
-  const updateQuantity = (id: number, quantity: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item
-      ).filter((item) => item.quantity > 0)
-    )
-  }
 
   const clearCart = () => {
     setCartItems([])
@@ -496,46 +502,49 @@ function handleResponse(response: Response, result: any) {
           </div>
         </div>
       </div>
-      {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredProducts.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              <div className="relative h-48">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover rounded-t-lg"
-                />
-              </div>
-              <CardTitle>{product.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">{product.description}</p>
-              <p className="mt-2 font-bold">${product.price.toFixed(2)}</p>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={() => addToCart(product)} className="w-full">
-                Add to Cart
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-      ):(
-        
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center">
-        <h1 className="text-4xl font-bold text-green-600 mb-4">Products Not Found </h1>
-        <p className="text-lg text-gray-700 mb-6">
-          Not Products at the moment. Please check back in a few moments or make sure yo are connected to the internet.
-        </p>
-      </div>
-
-      )
-      
-      
-      }
+      {products.length === 0 ? (
+        <div className="flex justify-center items-center">
+          <div className="animate-pulse flex space-x-4">
+            <div className="flex-1 space-y-4 py-1">
+              <div className="h-48 bg-gray-400 rounded-lg"></div>
+              <div className="h-4 bg-gray-400 rounded"></div>
+              <div className="h-4 bg-gray-400 rounded w-3/4"></div>
+            </div>
+            <div className="flex-1 space-y-4 py-1">
+              <div className="h-48 bg-gray-400 rounded-lg"></div>
+              <div className="h-4 bg-gray-400 rounded"></div>
+              <div className="h-4 bg-gray-400 rounded w-3/4"></div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredProducts.map((product) => (
+            <Card key={product._id}>
+              <CardHeader>
+                <div className="relative h-48">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover rounded-t-lg"
+                  />
+                </div>
+                <CardTitle>{product.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{product.description}</p>
+                <p className="mt-2 font-bold">${product.price.toFixed(2)}</p>
+              </CardContent>
+              <CardFooter>
+                <Button onClick={() => addToCart(product)} className="w-full">
+                  Add to Cart
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
      
            </div>
       <SiteFooter />

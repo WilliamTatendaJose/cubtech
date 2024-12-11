@@ -17,7 +17,7 @@ export function ProductGrid({ products = [] }: ProductGridProps) {
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.isArray(products) && products.map((product) => (
         <ProductCard
-          key={product.id}
+          key={product._id}
           product={product}
           onSelect={() => setSelectedProduct(product)}
         />

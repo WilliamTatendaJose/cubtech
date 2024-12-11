@@ -8,7 +8,7 @@ type ProjectDetails = {
   mainImage: string;
   category: string;
   publishedAt: string;
-  images: any[];
+  images: string[];
   details: string[];
 };
 
@@ -26,19 +26,19 @@ export default async function handler(
         title,
         description,
         "mainImageUrl": mainImage.asset->url,
-        "additionalImages": images[].asset->url,
+        "images": images[].asset->url,
         category,
         details,
         publishedAt
       }`;
 
-      const product: ProjectDetails = await client.fetch(query, { id });
-      if (!product) {
+      const project: ProjectDetails = await client.fetch(query, { id });
+      if (!project) {
         res.status(404).json({ message: 'Product not found' });
         return;
       }
 
-      res.status(200).json(product);
+      res.status(200).json(project);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch product', error });
     }
