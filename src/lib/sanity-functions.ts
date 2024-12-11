@@ -4,7 +4,23 @@ export async function getProjects() {
   const projects = await client.fetch(`*[_type == "project"]`);
   return projects;
 }
+ export async function fetchProjectData (id: string){
+    const query = `*[_type == "project" && _id == $id][0] {
+      _id,
+      title,
+      description,
+      details,
+      images[] {
+        asset->{
+          url
+        }
+      }
+    }`;
+    return await client.fetch(query, { id });
+  };
 
+
+  
 export async function getProducts() {
   const products = await client.fetch(`*[_type == "product"]`);
   return products;
