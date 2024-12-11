@@ -5,15 +5,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { ContactSection } from "@/components/contact-section";
 import client from "@/lib/sanity-client";
 
-//Define the props type more precisely
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function ProjectPage({ params }: PageProps) {
-  const { id } = params;
+export default async function ProjectPage(context: { params: { id: string } }) {
+  const { id } = await context.params; // Await the params object
 
   // Fetch the project data from Sanity
   const query = `*[_type == "project" && _id == $id][0] {
