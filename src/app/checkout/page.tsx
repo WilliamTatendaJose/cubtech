@@ -63,12 +63,12 @@ export default function CheckoutPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <ShopHeader />
-      <main className="flex-1 container py-12">
+      <main className="flex-1 container py-12 ">
         <h1 className="text-3xl font-bold mb-6">Checkout</h1>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2 md:grid-cols-1">
           <div>
             <h2 className="text-xl font-semibold mb-4">Your Information</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 ">
               <div>
                 <Label htmlFor="name">Full Name</Label>
                 <Input
