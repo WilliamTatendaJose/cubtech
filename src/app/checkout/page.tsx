@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import Image from "next/image"
 import { ShopHeader } from "@/components/shop-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CardPaymentForm } from "@/components/CardPaymentForm"
 import { PayPalForm } from "@/components/PayPalForm"
 import { PaynowForm } from "@/components/PaynowForm"
+import paynowIcon from "@/components/images/Paynow.svg"
+
 
 
 export default function CheckoutPage() {
@@ -152,6 +155,12 @@ export default function CheckoutPage() {
               <Button type="submit" className="w-full">
                 Place Order (${total.toFixed(2)})
               </Button>
+               <Image
+              src={paynowIcon}
+              alt="paynow image"
+              fill
+              className="object-cover rounded-lg"
+            />
             </form>
           </div>
           <div>
