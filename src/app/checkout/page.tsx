@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -12,6 +11,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { CardPaymentForm } from "@/components/CardPaymentForm"
 import { PayPalForm } from "@/components/PayPalForm"
 import { PaynowForm } from "@/components/PaynowForm"
+
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart()
@@ -157,7 +157,7 @@ export default function CheckoutPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             {items.map((item) => (
-              <div key={item.id} className="flex justify-between py-2">
+              <div key={item._id} className="flex justify-between py-2">
                 <span>{item.name}</span>
                 <span>${item.price.toFixed(2)}</span>
               </div>
