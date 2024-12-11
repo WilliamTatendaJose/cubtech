@@ -5,10 +5,14 @@ import { SiteFooter } from "@/components/site-footer";
 import { ContactSection } from "@/components/contact-section";
 import client from "@/lib/sanity-client";
 
-export default async function ProjectPage({ params }: { params: { id: string } }) {
-  const id = params.id; // Correctly access the id from the params object
+interface ProjectPageProps {
+  params: { id: string };
+}
 
-  const fetchProjectData = (id: string) => {
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const id = await params.id;
+
+  const fetchProjectData = async (id: string) => {
     const query = `*[_type == "project" && _id == $id][0] {
       _id,
       title,
@@ -23,9 +27,8 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     return client.fetch(query, { id });
   };
 
-  const project = await fetchProjectData(id) ;
+  const project = await fetchProjectData(id);
 
-  // If no project is found, show the 404 page
   if (!project) {
     notFound();
   }
@@ -60,3 +63,4 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
