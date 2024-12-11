@@ -12,7 +12,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { CardPaymentForm } from "@/components/CardPaymentForm"
 import { PayPalForm } from "@/components/PayPalForm"
 import { PaynowForm } from "@/components/PaynowForm"
-import paynowIcon from "@/components/images/Paynow.svg"
+import paynowIcon from "./Paynow.svg"
 
 
 

@@ -109,10 +109,12 @@ useEffect(() => {
   setCartItems((prevItems) => {
     const existingItem = prevItems.find((item) => String(item.id) === String(product._id));
     if (existingItem) {
+       showToast(`${product.name} added to cart`);
       return prevItems.map((item) =>
         String(item.id) === String(product._id) ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
+       showToast(`${product.name} added to cart`);
       return [...prevItems, { ...product, id: String(product._id), quantity: 1 }]; // Convert product ID to string
     }
   });
