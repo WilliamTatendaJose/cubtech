@@ -67,7 +67,7 @@ export function ProjectsSection() {
                     </CarouselItem>
                   ))
                 ) : (
-                  <div className="items-center">loading .........</div>
+                  <div className="items-center">loading ..........</div>
                 )}
               </CarouselContent>
               <CarouselPrevious />
