@@ -18,12 +18,12 @@ export function CartSidebar() {
         <>
           <div className="flex-1 overflow-auto">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center justify-between py-2">
+              <div key={item._id} className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
+                <Button variant="ghost" size="icon" onClick={() => removeItem(item.cartId)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
