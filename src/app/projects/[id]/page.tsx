@@ -6,10 +6,11 @@ import { ContactSection } from "@/components/contact-section";
 import client from "@/lib/sanity-client";
 
 interface ProjectPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function ProjectPage({ params }: ProjectPageProps) {
+export default async function ProjectPage(props: ProjectPageProps) {
+  const params = await props.params;
   const id = await params.id;
 
   const fetchProjectData = async (id: string) => {
